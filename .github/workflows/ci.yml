@@ -43,6 +43,17 @@ jobs:
         run: |
           cargo build --profile=ci-build
 
+          
+      - name: Save Binary
+        working-directory: clients/cli
+        run: |
+          # 创建保存二进制文件的目录
+          mkdir -p $GITHUB_WORKSPACE/artifacts
+          # 定义二进制文件名
+          BINARY_NAME="nexus-network"
+          # 复制构建产物到 artifacts 目录
+          cp target/release/$BINARY_NAME $GITHUB_WORKSPACE/artifacts/$BINARY_NAME
+    
       - name: Run cargo clippy
         working-directory: clients/cli
         run: |
