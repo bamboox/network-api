@@ -44,33 +44,47 @@ jobs:
           cargo build --release
           ls target/release
 
-
-          
-      - name: Save Binary
+      - name: Compress target/release/
         working-directory: clients/cli
         run: |
-          # Create the artifacts directory
-          mkdir -p $GITHUB_WORKSPACE/artifacts
-          
-          # Define the binary name
-          BINARY_NAME="prover"
-          
-          # List the files in target/release to verify the binary exists
-          ls -l target/release/
-          
-          # Check if the binary exists before copying
-          if [ -f "target/release/$BINARY_NAME" ]; then
-            # Copy the build artifact to the artifacts directory
-            cp target/release/$BINARY_NAME $GITHUB_WORKSPACE/artifacts/$BINARY_NAME
-            echo "Successfully copied the binary to artifacts."
-          else
-            echo "Binary $BINARY_NAME not found in target/release"
-          fi
-      
+          echo "Compressing the target/release directory..."
+          tar -czf $GITHUB_WORKSPACE/artifacts/release.tar.gz -C target release
+          echo "Compression completed."
+
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: binaries
-          path: $GITHUB_WORKSPACE/artifacts/
+          name: release-artifacts
+          path: $GITHUB_WORKSPACE/artifacts/release.tar.gz
           if-no-files-found: warn
           include-hidden-files: false
+          
+      # - name: Save Binary
+      #   working-directory: clients/cli
+      #   run: |
+      #     # Create the artifacts directory
+      #     mkdir -p $GITHUB_WORKSPACE/artifacts
+          
+      #     # Define the binary name
+      #     BINARY_NAME="prover"
+          
+      #     # List the files in target/release to verify the binary exists
+      #     ls -l target/release/
+          
+      #     # Check if the binary exists before copying
+      #     if [ -f "target/release/$BINARY_NAME" ]; then
+      #       # Copy the build artifact to the artifacts directory
+      #       cp target/release/$BINARY_NAME $GITHUB_WORKSPACE/artifacts/$BINARY_NAME
+      #       echo "Successfully copied the binary to artifacts."
+      #     else
+      #       echo "Binary $BINARY_NAME not found in target/release"
+      #     fi
+      
+      # - name: Upload Artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: binaries
+      #     path: $GITHUB_WORKSPACE/artifacts/
+      #     if-no-files-found: warn
+      #     include-hidden-files: false
