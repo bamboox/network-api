@@ -1,6 +1,7 @@
 name: ci
 
 on:
+  workflow_dispatch: # 添加手动触发
   push:
     branches:
       - main
