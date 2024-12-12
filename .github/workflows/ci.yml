@@ -49,16 +49,28 @@ jobs:
       - name: Save Binary
         working-directory: clients/cli
         run: |
-          # 创建保存二进制文件的目录
+          # Create the artifacts directory
           mkdir -p $GITHUB_WORKSPACE/artifacts
-          # 定义二进制文件名
+          
+          # Define the binary name
           BINARY_NAME="prover"
-          # 复制构建产物到 artifacts 目录
-          cp target/release/$BINARY_NAME $GITHUB_WORKSPACE/artifacts/$BINARY_NAME
-    
+          
+          # List the files in target/release to verify the binary exists
+          ls -l target/release/
+          
+          # Check if the binary exists before copying
+          if [ -f "target/release/$BINARY_NAME" ]; then
+            # Copy the build artifact to the artifacts directory
+            cp target/release/$BINARY_NAME $GITHUB_WORKSPACE/artifacts/$BINARY_NAME
+            echo "Successfully copied the binary to artifacts."
+          else
+            echo "Binary $BINARY_NAME not found in target/release"
+          fi
+      
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: binaries
           path: $GITHUB_WORKSPACE/artifacts/
-
+          if-no-files-found: warn
+          include-hidden-files: false
