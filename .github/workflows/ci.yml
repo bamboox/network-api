@@ -41,7 +41,7 @@ jobs:
       - name: Build
         working-directory: clients/cli
         run: |
-          cargo run --release
+          cargo build --release
 
           
       - name: Save Binary
